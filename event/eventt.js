@@ -7,5 +7,5 @@ document.querySelector("div").onmouseover = () =>{
 }
 document.querySelector("p").onmouseover = (evt) =>{
     console.log(evt.type);
-     console.log(evt.target);
+    console.log(evt.target);
 }
