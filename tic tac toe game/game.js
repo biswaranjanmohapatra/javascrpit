@@ -1,6 +1,10 @@
 let boxes = document.querySelectorAll(".nox");
 let newbutton = document.querySelector("#newbtn");
 let resetbutton = document.querySelector("#resetbtn");
+
+let msg = document.querySelector(".msg");
+let msgContainer = document.querySelector(".msgcon");
+
 let turnO = true;
 
 let checkwin = [
@@ -13,11 +17,36 @@ let checkwin = [
     [0,4,8],
     [2,4,6],
 ];
-const showWinner = (winner) => {
-    msg.innerText = `Congruation the winner is ${winner}`;
-    msg.classList.re
-}
 
+// ✅ Show Winner
+const showWinner = (winner) => {
+    msg.innerText = `🎉 Congratulations! Winner is ${winner}`;
+    msgContainer.classList.remove("hide");
+};
+
+// ✅ Disable all boxes
+const disablebtn = () => {
+    for (let box of boxes) {
+        box.disabled = true;
+    }
+};
+
+// ✅ Enable + Clear board
+const enablebtn = () => {
+    for (let box of boxes) {
+        box.disabled = false;
+        box.innerText = "";
+    }
+};
+
+// ✅ Reset Game
+const resetgame = () => {
+    turnO = true;
+    enablebtn();
+    msgContainer.classList.add("hide");
+};
+
+// ✅ Check Winner
 const checkwinner = () => {
     for (let pattern of checkwin) {
         let pat1 = boxes[pattern[0]].innerText;
@@ -26,13 +55,33 @@ const checkwinner = () => {
 
         if (pat1 !== "" && pat2 !== "" && pat3 !== "") {
             if (pat1 === pat2 && pat2 === pat3) {
-                console.log("Winner:", pat1);
+                disablebtn();
                 showWinner(pat1);
+                return true;
             }
         }
     }
+    return false;
 };
 
+// ✅ Check Draw
+const checkDraw = () => {
+    let isDraw = true;
+
+    for (let box of boxes) {
+        if (box.innerText === "") {
+            isDraw = false;
+            break;
+        }
+    }
+
+    if (isDraw) {
+        msg.innerText = "😅 It's a Draw!";
+        msgContainer.classList.remove("hide");
+    }
+};
+
+// ✅ Game Click Logic
 boxes.forEach((box) => {
     box.addEventListener("click", () => {
         if (turnO) {
@@ -44,8 +93,14 @@ boxes.forEach((box) => {
         }
 
         box.disabled = true;
-        checkwinner();
-        
+
+        let isWinner = checkwinner();
+        if (!isWinner) {
+            checkDraw();
+        }
     });
 });
 
+// ✅ Buttons
+newbutton.addEventListener("click", resetgame);
+resetbutton.addEventListener("click", resetgame);
